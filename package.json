@@ -15,5 +15,14 @@
   "bugs": {
     "url": "https://github.com/chris6661/mvc-challenge-14/issues"
   },
-  "homepage": "https://github.com/chris6661/mvc-challenge-14#readme"
+  "homepage": "https://github.com/chris6661/mvc-challenge-14#readme",
+  "dependencies": {
+    "bcrypt": "^5.0.1",
+    "connect-session-sequelize": "^7.1.1",
+    "dotenv": "^8.2.0",
+    "express-handlebars": "^5.2.1",
+    "express-session": "^1.17.1",
+    "mysql2": "^2.2.5",
+    "sequelize": "^6.6.2"
+  }
 }
