@@ -3,7 +3,7 @@ const {
 } = require('../models');
 
 const commentData = [{
-        comment_text: "How much wood would a woodchuck chuck if a woodchuck could chuck wood?",
+        comment_text: "A woodchuck would chuck all the wood if a woodchuck could chuck wood.",
         user_id: 1,
         post_id: 1
     },

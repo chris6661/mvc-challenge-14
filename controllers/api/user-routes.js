@@ -34,6 +34,7 @@ router.get('/:id', (req, res) => {
                         'created_at'
                     ]
                 },
+
                 {
                     model: Comment,
                     attributes: ['id', 'comment_text', 'created_at'],
@@ -62,6 +63,7 @@ router.get('/:id', (req, res) => {
             res.status(500).json(err);
         });
 });
+
 
 router.post('/', (req, res) => {
 
@@ -144,7 +146,7 @@ router.put('/:id', (req, res) => {
         .then(dbUserData => {
             if (!dbUserData[0]) {
                 res.status(404).json({
-                    message: 'No user found with this id.'
+                    message: 'No user found with this id'
                 });
                 return;
             }
@@ -166,7 +168,7 @@ router.delete('/:id', (req, res) => {
         .then(dbUserData => {
             if (!dbUserData) {
                 res.status(404).json({
-                    message: 'No user found with this id.'
+                    message: 'No user found with this id'
                 });
                 return;
             }

@@ -6,7 +6,6 @@ const {
     Comment
 } = require('../models');
 const withAuth = require('../utils/auth');
-
 router.get('/', withAuth, (req, res) => {
     Post.findAll({
             where: {
@@ -33,12 +32,12 @@ router.get('/', withAuth, (req, res) => {
             ]
         })
         .then(dbPostData => {
-            const posts = dbPostDate.map(post => post.get({
+            const posts = dbPostData.map(post => post.get({
                 plain: true
             }));
             res.render('dashboard', {
                 posts,
-                loggIn: true
+                loggedIn: true
             });
         })
         .catch(err => {
@@ -46,7 +45,6 @@ router.get('/', withAuth, (req, res) => {
             res.status(500).json(err);
         });
 });
-
 router.get('/edit/:id', withAuth, (req, res) => {
     Post.findOne({
             where: {
@@ -95,5 +93,7 @@ router.get('/edit/:id', withAuth, (req, res) => {
 router.get('/new', (req, res) => {
     res.render('new-post');
 });
+
+
 
 module.exports = router;
