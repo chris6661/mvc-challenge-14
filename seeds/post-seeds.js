@@ -2,20 +2,21 @@ const {
     Post
 } = require('../models');
 
-const postData = [{
+const postData = [
+    {
         title: 'The chucker of wood',
-        content: 'As of time of wriing, it is unknown how much wood a woodchuck would chuck if a woodchuck could chuck wood.',
+        post_url: 'https://woodchucks.com',
         user_id: 2
 
     },
     {
         title: 'Motivational Phrases',
-        content: 'The phrases to start your day with, everyday.',
+        post_url: 'https://startthedayoffright.org',
         user_id: 3
     },
     {
         title: 'Most effective game preparation methods',
-        content: 'Is practice the best way to prepare for a game?',
+        post_url: 'hockeyizlyfe.com.ca',
         user_id: 1
     }
 ];

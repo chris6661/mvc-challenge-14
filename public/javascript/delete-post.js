@@ -7,12 +7,6 @@ async function deleteFormHandler(event) {
 
     const response = await fetch(`/api/posts/${id}`, {
         method: 'DELETE',
-        body: JSON.stringify({
-            post_id: id
-        }),
-        headers: {
-            'Content-Type': 'application/json'
-        }
     });
 
     if (response.ok) {
@@ -20,7 +14,6 @@ async function deleteFormHandler(event) {
     } else {
         alert(response.statusText);
     }
-
 }
 
 document.querySelector('.delete-post-btn').addEventListener('click', deleteFormHandler);
