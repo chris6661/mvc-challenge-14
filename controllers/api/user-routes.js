@@ -2,12 +2,13 @@ const router = require('express').Router();
 const {
     User,
     Post,
-    Comment,
-    Vote
+    Comment
 } = require('../../models');
+const withAuth = require('../../utils/auth');
 
-// get all users
+// GET /api/users - all users
 router.get('/', (req, res) => {
+    // Access User model 
     User.findAll({
             attributes: {
                 exclude: ['password']
@@ -20,6 +21,7 @@ router.get('/', (req, res) => {
         });
 });
 
+// GET /api/users/1 - single user
 router.get('/:id', (req, res) => {
     User.findOne({
             attributes: {
@@ -30,7 +32,7 @@ router.get('/:id', (req, res) => {
             },
             include: [{
                     model: Post,
-                    attributes: ['id', 'title', 'post_url', 'created_at']
+                    attributes: ['id', 'title', 'post_text', 'created_at']
                 },
                 {
                     model: Comment,
@@ -39,19 +41,13 @@ router.get('/:id', (req, res) => {
                         model: Post,
                         attributes: ['title']
                     }
-                },
-                {
-                    model: Post,
-                    attributes: ['title'],
-                    through: Vote,
-                    as: 'voted_posts'
                 }
             ]
         })
         .then(dbUserData => {
             if (!dbUserData) {
                 res.status(404).json({
-                    message: 'No user found with this id'
+                    message: 'No User found with this ID'
                 });
                 return;
             }
@@ -63,8 +59,8 @@ router.get('/:id', (req, res) => {
         });
 });
 
+// POST /api/users - create new user
 router.post('/', (req, res) => {
-    // expects {username: 'Lernantino', email: 'lernantino@gmail.com', password: 'password1234'}
     User.create({
             username: req.body.username,
             email: req.body.email,
@@ -77,7 +73,7 @@ router.post('/', (req, res) => {
                 req.session.loggedIn = true;
 
                 res.json(dbUserData);
-            });
+            })
         })
         .catch(err => {
             console.log(err);
@@ -85,25 +81,28 @@ router.post('/', (req, res) => {
         });
 });
 
+// POST login route /api/users/login
 router.post('/login', (req, res) => {
-    // expects {email: 'lernantino@gmail.com', password: 'password1234'}
+    // expect {email: '', password: ''}
     User.findOne({
         where: {
             email: req.body.email
         }
     }).then(dbUserData => {
+        // if user email not found
         if (!dbUserData) {
             res.status(400).json({
                 message: 'No user with that email address!'
             });
             return;
         }
-
+        // verify user using method from User model - returns true if PW match
         const validPassword = dbUserData.checkPassword(req.body.password);
 
+        // if password does not match
         if (!validPassword) {
             res.status(400).json({
-                message: 'Incorrect password!'
+                message: "Incorrect password!"
             });
             return;
         }
@@ -115,13 +114,15 @@ router.post('/login', (req, res) => {
 
             res.json({
                 user: dbUserData,
-                message: 'You are now logged in!'
+                message: 'You are now logged in! '
             });
         });
     });
 });
 
+// POST logout route /api/users/logout
 router.post('/logout', (req, res) => {
+    // if session exists destroy it
     if (req.session.loggedIn) {
         req.session.destroy(() => {
             res.status(204).end();
@@ -131,10 +132,9 @@ router.post('/logout', (req, res) => {
     }
 });
 
-router.put('/:id', (req, res) => {
-    // expects {username: 'Lernantino', email: 'lernantino@gmail.com', password: 'password1234'}
+// PUT /api/users/1 - edit user
+router.put('/:id', withAuth, (req, res) => {
 
-    // pass in req.body instead to only update what's passed through
     User.update(req.body, {
             individualHooks: true,
             where: {
@@ -142,12 +142,13 @@ router.put('/:id', (req, res) => {
             }
         })
         .then(dbUserData => {
-            if (!dbUserData) {
+            if (!dbUserData[0]) {
                 res.status(404).json({
                     message: 'No user found with this id'
                 });
                 return;
             }
+            // if user exists
             res.json(dbUserData);
         })
         .catch(err => {
@@ -156,7 +157,8 @@ router.put('/:id', (req, res) => {
         });
 });
 
-router.delete('/:id', (req, res) => {
+// DELETE /api/users/1 - delete single user
+router.delete('/:id', withAuth, (req, res) => {
     User.destroy({
             where: {
                 id: req.params.id
@@ -165,7 +167,7 @@ router.delete('/:id', (req, res) => {
         .then(dbUserData => {
             if (!dbUserData) {
                 res.status(404).json({
-                    message: 'No user found with this id'
+                    message: "No user found with this id"
                 });
                 return;
             }
